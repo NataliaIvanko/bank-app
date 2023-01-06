@@ -10,7 +10,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,6 @@ private TransactionRepository transactionRepository;
 @Autowired
 private  EntityManager entityManager;
 
-    private final List<Transaction> transactionsList = new ArrayList<>();
     @Override
     public ResponseEntity<Transaction> getTransactionByID(Long id) {
         var transaction = transactionRepository.findById(id)
@@ -33,16 +31,6 @@ private  EntityManager entityManager;
 
         return ResponseEntity.ok(transaction);
     }
-    /*
-     Transaction transaction = null;
-        for(Transaction tr : transactionsList){
-            if(transaction.getId().equals(id)){
-                return ResponseEntity.ok(tr);
-            }
-        }
-        throw new ResponseStatusException(NOT_FOUND, "Transaction not found");
-    }
-     */
 
 
     @Override
@@ -65,24 +53,5 @@ private  EntityManager entityManager;
 
         return emQuery.getResultList();
     }
-/*
-    @Override
-    public List<Transaction> getTransactionsByFilters(String type, LocalDateTime date, String sort, Transaction transaction) {
-        Map<String, Object> searchParams = new HashMap<>();
-        StringBuilder query = new StringBuilder();
-        // select * from account_details where ad.account.name = :name and ad.country = :country
-        query.append("from Transaction tr where 1=1");
-
-        if(transaction.getDateTime() != null){
-            query.append(" and tr.dateTime = :dateTime ");
-            searchParams.put("dateTime", transaction.getDateTime());
-        }
-        Query emQuery = entityManager.createQuery(query.toString());
-        searchParams.forEach((k, v)-> emQuery.setParameter(k, v));
-
-        return emQuery.getResultList();
-    }
-
- */
 
 }
