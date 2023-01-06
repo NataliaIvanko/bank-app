@@ -7,13 +7,14 @@ import com.telran.bankappfirsttry.repository.AccountRepository;
 import com.telran.bankappfirsttry.repository.TransactionRepository;
 import com.telran.bankappfirsttry.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Comparator;
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -26,19 +27,14 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-  //  private final static AtomicInteger userId = new AtomicInteger();
-    private final Map<Long, Account> accountsMap = new HashMap<Long, Account>();
+    //  private final static AtomicInteger userId = new AtomicInteger();
+  //  private final Map<Long, Account> accountsMap = new HashMap<Long, Account>();
 
-    private final List<Transaction> transactionList = new ArrayList<>();
-
-    List<String> cities = accountsMap.values().stream()
-            .map(Account::getCity)
-            .collect(Collectors.toList());
-
+//    private final List<Transaction> transactionList = new ArrayList<>();
 
     @Override
     public void createAccount(Account account) {
-       var dbAccount = Account.builder()
+        var dbAccount = Account.builder()
                 .firstName(account.getFirstName())
                 .lastName(account.getLastName())
                 .country(account.getCountry())
@@ -46,28 +42,25 @@ public class AccountServiceImpl implements AccountService {
                 .email(account.getEmail())
                 .creationDate(Instant.now())
                 .balance(account.getBalance())
-           //    .transactions(account.getTransactions())
+                //    .transactions(account.getTransactions())
                 .build();
 
-         accountRepository.save(dbAccount);
+        accountRepository.save(dbAccount);
 
-}
-
-@Override
-public ResponseEntity<Account> getAccountById(Long userId) {
-    var  account = accountRepository.findById(userId).get();
-    if (account == null) {
-        throw new ResponseStatusException(NOT_FOUND, "account is not found");
     }
-    return ResponseEntity.ok(account);
-}
+
+    @Override
+    public ResponseEntity<Account> getAccountById(Long userId) {
+        var account = accountRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "account is not found"));
+
+        return ResponseEntity.ok(account);
+    }
+
     @Override
     public Account updateAccountById(Long userId, Account account, Float amount) {
         var newInfoAcc = accountRepository.findById(userId)
-                .orElseThrow(()-> new ResponseStatusException(NOT_FOUND));
-        // if (userId == null) {
-       //      throw new ResponseStatusException(NOT_FOUND);
-     //    }
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+
         if (account.getFirstName() != null) {
             newInfoAcc.setFirstName(account.getFirstName());
         }
@@ -86,18 +79,16 @@ public ResponseEntity<Account> getAccountById(Long userId) {
         if (account.getBalance() != null) {
 
             newInfoAcc.setBalance(account.getBalance() + amount);
-           // Transaction transaction = new Transaction();
+            // Transaction transaction = new Transaction();
             var transaction = Transaction.builder()
-                            .accountTo(userId)
-                            .accountFrom(userId)
-                            .dateTime(Instant.now())
-                            .amount(amount)
-                            .build();
+                    .accountTo(userId)
+                    .accountFrom(userId)
+                    .dateTime(Instant.now())
+                    .amount(amount)
+                    .build();
 
             transactionRepository.save(transaction);
-         //   newInfoAcc.setTransactions(List.of(transaction));
-         //  transaction.setAccountTo(userId);
-      //      transaction.setAccountFrom(userId);
+
             if (transaction.getAccountTo().equals(transaction.getAccountFrom()) && amount > 0) {
                 transaction.setType(TransactionType.DEPOSIT);
             }
@@ -112,10 +103,6 @@ public ResponseEntity<Account> getAccountById(Long userId) {
 
 
             accountRepository.save(newInfoAcc);
-            // transaction.setAmount(amount);
-            //   accountsMap.get(userId).addTransactionToList(transaction.getId());
-           // System.out.println(transaction);
-
 
         }
         accountRepository.save(newInfoAcc);
@@ -128,16 +115,16 @@ public ResponseEntity<Account> getAccountById(Long userId) {
 
         if (city != null && creationDate == null) { //city
             if (sort == null) {
-                return accountRepository.findAllByCityIn(city).stream()
+                return accountRepository.findAllByCityInIgnoreCase(city).stream()
                         .toList();
             }
             if (sort.equalsIgnoreCase("creationDate")) { //city and crDate
-                return accountRepository.findAllByCityIn(city).stream()
+                return accountRepository.findAllByCityInIgnoreCase(city).stream()
                         .sorted(Comparator.comparing(Account::getCreationDate))
                         .toList();
             }
             if (sort.equalsIgnoreCase("-creationDate")) {
-               return  accountRepository.findAllByCityIn(city).stream()
+                return accountRepository.findAllByCityInIgnoreCase(city).stream()
                         .sorted(Comparator.comparing(Account::getCreationDate, Comparator.reverseOrder()))
                         .toList();
             }
@@ -148,12 +135,12 @@ public ResponseEntity<Account> getAccountById(Long userId) {
                         .toList();
             }
             if (sort.equalsIgnoreCase("creationDate")) {
-                  return accountRepository.findAccountByCreationDate(creationDate).stream()
+                return accountRepository.findAccountByCreationDate(creationDate).stream()
                         .sorted(Comparator.comparing(Account::getCreationDate))
                         .toList();
             }
             if (sort.equalsIgnoreCase("-creationDate")) {
-                 return accountRepository.findAccountByCreationDate(creationDate).stream()
+                return accountRepository.findAccountByCreationDate(creationDate).stream()
                         .sorted(Comparator.comparing(Account::getCreationDate, Comparator.reverseOrder()))
                         .toList();
             }
@@ -182,32 +169,44 @@ public ResponseEntity<Account> getAccountById(Long userId) {
 
     @Override
     public void transferMoneyBetweenAccounts(Long idTo, Long idFrom, Float amount, Account account, Long id) {
+        Account accountTo = accountRepository.findById(idTo).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+        Account accountFrom = accountRepository.findById(idFrom).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
         if (!isAccountPresent(idTo)) {
             throw new ResponseStatusException(NOT_FOUND, "destination account is not found");
         }
+        System.out.println(idTo);
         if (!isAccountPresent(idFrom)) {
             throw new ResponseStatusException(NOT_FOUND, "source account is not found");
         }
-        if (!isEnoughMoney(amount, id)) {
+        System.out.println(idFrom);
+        if (!isEnoughMoney(amount, idFrom)) {
             throw new ResponseStatusException(BAD_REQUEST, "either the source or the destination account balance is lower than the transferred amount");
         }
+        System.out.println("---");
 
-        accountsMap.get(idTo).setBalance(accountsMap.get(idTo).getBalance() + amount);
 
-        accountsMap.get(idFrom).setBalance(accountsMap.get(idFrom).getBalance() - amount);
-        Transaction transaction = new Transaction();
-        transaction.setAccountTo(idTo);
-        transaction.setAccountFrom(idFrom);
-        transaction.setType(TransactionType.TRANSFER);
-        transaction.setAmount(amount);
+        accountTo.setBalance(account.getBalance() + amount);
+        System.out.println(accountTo);
+
+
+        accountFrom.setBalance(account.getBalance() - amount);
+        System.out.println(accountFrom);
+
+        var transaction = Transaction.builder()
+                .accountTo(idTo)
+                .accountFrom(idFrom)
+                .dateTime(Instant.now())
+                .type(TransactionType.TRANSFER)
+                .amount(amount)
+                .build();
         System.out.println(transaction);
-  //      accountsMap.get(idTo).addTransactionToList(transaction.getId());
-  //      accountsMap.get(idFrom).addTransactionToList(transaction.getId());
-
-
-        //  return transaction;
-
+        transactionRepository.save(transaction);
+        accountFrom.getTransactions().add(transaction);
+        accountRepository.save(accountFrom);
+        accountTo.getTransactions().add(transaction);
+        accountRepository.save(accountTo);
     }
+
 
     private boolean isAccountPresent(Long id) {
         return accountRepository.findById(id).stream()
@@ -215,18 +214,17 @@ public ResponseEntity<Account> getAccountById(Long userId) {
 
 
     }
-    private boolean isEnoughMoney(Float amount, Long id) {
-        var amountCheck = accountRepository.findById(id).orElseThrow();
-        return  amountCheck.getBalance()>=amount;
+
+    private boolean isEnoughMoney(Float amount, Long idFrom) {
+        var amountCheck = accountRepository.findById(idFrom).orElseThrow(() -> new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT));
+
+        return amountCheck.getBalance() >= amount;
 
     }
-
-
 
     @Override
     public void deleteAccountByUserId(Long userId) {
         accountRepository.deleteById(userId);
-
     }
 
 

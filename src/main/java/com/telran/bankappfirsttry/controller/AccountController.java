@@ -15,13 +15,9 @@ public class AccountController {
 
     @Autowired
     private AccountService accountService;
-
-
-
     public AccountController(AccountService accountService){
         this.accountService = accountService;
     }
-
 
     @PostMapping("/accounts")
     public void createAccount(@RequestBody Account account){
@@ -29,11 +25,11 @@ public class AccountController {
 
     }
 
-
     @GetMapping("/accounts/{userId}")
     public ResponseEntity<Account> findAccountById(@PathVariable("userId") Long userId) {
         return  accountService.getAccountById(userId);
     }
+
     @GetMapping("/accounts")   //creationDate
     public List<Account> getAccountsFiltered(@RequestParam (value = "city", required = false) List<String>city,
                                              @RequestParam(value = "date", required = false) Instant creationDate,
@@ -57,7 +53,6 @@ public class AccountController {
                                              @RequestParam(value = "id", required = false) Long id,
                                              @RequestBody Account account){
         accountService.transferMoneyBetweenAccounts(idFrom, idTo, amount, account, id);
-
     }
     /*
     @DeleteMapping("/accounts/{userId}")

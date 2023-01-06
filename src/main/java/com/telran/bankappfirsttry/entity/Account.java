@@ -39,6 +39,7 @@ public class Account {
     private String city;
 
     @Column(name = "email")
+
     private String email;
 
     @Column(name = "creation_date")
