@@ -26,8 +26,9 @@ public class TransactionController {
     }
 
     @PostMapping("/transactions/search")
-    public List<Transaction> getTransactionsFiltered(  @RequestBody Transaction transaction){
-        return transactionService.getTransactionsFiltered(transaction);
+    public List<Transaction> getTransactionsFiltered(  @RequestBody Transaction transaction,
+                                                       @RequestParam(value = "sort", required = false) String sort){
+        return transactionService.getTransactionsFiltered(transaction, sort);
     }
 
      /*

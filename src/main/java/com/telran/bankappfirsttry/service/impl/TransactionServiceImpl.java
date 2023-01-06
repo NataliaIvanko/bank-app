@@ -34,7 +34,7 @@ private  EntityManager entityManager;
 
 
     @Override
-    public List<Transaction> getTransactionsFiltered(Transaction transaction) {
+    public List<Transaction> getTransactionsFiltered(Transaction transaction, String sort) {
         Map<String, Object> searchParams = new HashMap<>();
         StringBuilder query = new StringBuilder();
         // select * from account_details where ad.account.name = :name and ad.country = :country
@@ -48,6 +48,16 @@ private  EntityManager entityManager;
             query.append(" and tr.type = :type ");
             searchParams.put("type", transaction.getType());
         }
+        if(transaction.getType()!= null && sort != null) {
+            if (sort.equals("-creationDate")) {
+                query.append(" and tr.type = :type ORDER BY tr.dateTime DESC ");
+            }
+            if (sort.equals("creationDate")) {
+                query.append(" and tr.type = :type ORDER BY tr.dateTime ASC ");
+            }
+            searchParams.put("type", transaction.getType());
+        }
+
         Query emQuery = entityManager.createQuery(query.toString());
         searchParams.forEach((k, v)-> emQuery.setParameter(k, v));
 
