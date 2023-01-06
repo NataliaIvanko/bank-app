@@ -100,13 +100,9 @@ public class AccountServiceImpl implements AccountService {
             }
             transactionRepository.save(transaction);
             newInfoAcc.getTransactions().add(transaction);
-
-
             accountRepository.save(newInfoAcc);
-
         }
         accountRepository.save(newInfoAcc);
-
         return newInfoAcc;
     }
 
@@ -174,23 +170,15 @@ public class AccountServiceImpl implements AccountService {
         if (!isAccountPresent(idTo)) {
             throw new ResponseStatusException(NOT_FOUND, "destination account is not found");
         }
-        System.out.println(idTo);
         if (!isAccountPresent(idFrom)) {
             throw new ResponseStatusException(NOT_FOUND, "source account is not found");
         }
-        System.out.println(idFrom);
         if (!isEnoughMoney(amount, idFrom)) {
-            throw new ResponseStatusException(BAD_REQUEST, "either the source or the destination account balance is lower than the transferred amount");
+            throw new ResponseStatusException(BAD_REQUEST, "source account balance" + idFrom+ "is lower than the transferred amount");
         }
-        System.out.println("---");
-
 
         accountTo.setBalance(account.getBalance() + amount);
-        System.out.println(accountTo);
-
-
         accountFrom.setBalance(account.getBalance() - amount);
-        System.out.println(accountFrom);
 
         var transaction = Transaction.builder()
                 .accountTo(idTo)
@@ -206,27 +194,20 @@ public class AccountServiceImpl implements AccountService {
         accountTo.getTransactions().add(transaction);
         accountRepository.save(accountTo);
     }
-
-
     private boolean isAccountPresent(Long id) {
         return accountRepository.findById(id).stream()
                 .anyMatch(acc -> acc.getUserId().equals(id));
-
-
     }
 
     private boolean isEnoughMoney(Float amount, Long idFrom) {
         var amountCheck = accountRepository.findById(idFrom).orElseThrow(() -> new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT));
-
         return amountCheck.getBalance() >= amount;
-
     }
 
     @Override
     public void deleteAccountByUserId(Long userId) {
         accountRepository.deleteById(userId);
     }
-
 
 }
 
