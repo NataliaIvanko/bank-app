@@ -28,8 +28,13 @@ private  EntityManager entityManager;
     private final List<Transaction> transactionsList = new ArrayList<>();
     @Override
     public ResponseEntity<Transaction> getTransactionByID(Long id) {
+        var transaction = transactionRepository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(NOT_FOUND, "Transaction not found"));
 
-        Transaction transaction = null;
+        return ResponseEntity.ok(transaction);
+    }
+    /*
+     Transaction transaction = null;
         for(Transaction tr : transactionsList){
             if(transaction.getId().equals(id)){
                 return ResponseEntity.ok(tr);
@@ -37,6 +42,7 @@ private  EntityManager entityManager;
         }
         throw new ResponseStatusException(NOT_FOUND, "Transaction not found");
     }
+     */
 
 
     @Override
