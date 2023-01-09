@@ -1,5 +1,6 @@
 package com.telran.bankappfirsttry.service.impl;
 
+import com.telran.bankappfirsttry.dto.AccountRequestDTO;
 import com.telran.bankappfirsttry.entity.Account;
 import com.telran.bankappfirsttry.entity.Transaction;
 import com.telran.bankappfirsttry.entity.TransactionType;
@@ -33,15 +34,15 @@ public class AccountServiceImpl implements AccountService {
 //    private final List<Transaction> transactionList = new ArrayList<>();
 
     @Override
-    public void createAccount(Account account) {
+    public void createAccount(AccountRequestDTO request) {
         var dbAccount = Account.builder()
-                .firstName(account.getFirstName())
-                .lastName(account.getLastName())
-                .country(account.getCountry())
-                .city(account.getCity())
-                .email(account.getEmail())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .country(request.getCountry())
+                .city(request.getCity())
+                .email(request.getEmail())
                 .creationDate(Instant.now())
-                .balance(account.getBalance())
+                .balance(request.getBalance())
                 //    .transactions(account.getTransactions())
                 .build();
 

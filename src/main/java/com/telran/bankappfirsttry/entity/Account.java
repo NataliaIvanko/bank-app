@@ -2,6 +2,7 @@ package com.telran.bankappfirsttry.entity;
 
 //import jakarta.persistence.*;
 
+import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,9 +27,11 @@ public class Account {
     @Column(name = "user_id")
     private Long userId;
 
+    @NotNull
     @Column(name = "first_name")
     private String firstName;
 
+    @NotNull
     @Column(name = "last_name")
     private String lastName;
 
@@ -38,8 +41,8 @@ public class Account {
     @Column(name = "city")
     private String city;
 
+  //  @Email()
     @Column(name = "email")
-
     private String email;
 
     @Column(name = "creation_date")

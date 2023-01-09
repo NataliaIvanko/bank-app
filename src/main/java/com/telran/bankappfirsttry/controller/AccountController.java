@@ -1,5 +1,6 @@
 package com.telran.bankappfirsttry.controller;
 
+import com.telran.bankappfirsttry.dto.AccountRequestDTO;
 import com.telran.bankappfirsttry.entity.Account;
 import com.telran.bankappfirsttry.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@ public class AccountController {
     }
 
     @PostMapping("/accounts")
-    public void createAccount(@RequestBody Account account){
-        accountService.createAccount(account);
+    public void createAccount(@RequestBody AccountRequestDTO requestDTO){
+        accountService.createAccount(requestDTO);
 
     }
 
