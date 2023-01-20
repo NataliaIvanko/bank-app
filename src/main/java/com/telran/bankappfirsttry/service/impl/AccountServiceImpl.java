@@ -2,6 +2,7 @@ package com.telran.bankappfirsttry.service.impl;
 
 import com.telran.bankappfirsttry.dto.AccountRequestDTO;
 import com.telran.bankappfirsttry.dto.AccountResponseDTO;
+import com.telran.bankappfirsttry.dto.converter.ConverterDTO;
 import com.telran.bankappfirsttry.entity.Account;
 import com.telran.bankappfirsttry.entity.Transaction;
 import com.telran.bankappfirsttry.entity.TransactionType;
@@ -36,19 +37,18 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void createAccount(AccountRequestDTO request) {
-        //Account account =
-        var dbAccount = Account.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .country(request.getCountry())
-                .city(request.getCity())
-                .email(request.getEmail())
-                .creationDate(Instant.now())
-                .balance(request.getBalance())
-                //    .transactions(account.getTransactions())//make null?? since we create an account without a transaction
-                .build();
-
-        accountRepository.save(dbAccount);
+        Account account = ConverterDTO.convertDtoToAccount(request);
+        accountRepository.save(account);
+        //        var dbAccount = Account.builder()
+//                .firstName(request.getFirstName())
+//                .lastName(request.getLastName())
+//                .country(request.getCountry())
+//                .city(request.getCity())
+//                .email(request.getEmail())
+//                .creationDate(Instant.now())
+//                .balance(request.getBalance())
+//                //    .transactions(account.getTransactions())//make null?? since we create an account without a transaction
+//                .build();
 
     }
 
