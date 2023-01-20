@@ -1,6 +1,7 @@
 package com.telran.bankappfirsttry.service.impl;
 
 import com.telran.bankappfirsttry.dto.AccountRequestDTO;
+import com.telran.bankappfirsttry.dto.AccountResponseDTO;
 import com.telran.bankappfirsttry.entity.Account;
 import com.telran.bankappfirsttry.entity.Transaction;
 import com.telran.bankappfirsttry.entity.TransactionType;
@@ -35,6 +36,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void createAccount(AccountRequestDTO request) {
+        //Account account =
         var dbAccount = Account.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -43,7 +45,7 @@ public class AccountServiceImpl implements AccountService {
                 .email(request.getEmail())
                 .creationDate(Instant.now())
                 .balance(request.getBalance())
-                //    .transactions(account.getTransactions())
+                //    .transactions(account.getTransactions())//make null?? since we create an account without a transaction
                 .build();
 
         accountRepository.save(dbAccount);
@@ -56,11 +58,18 @@ public class AccountServiceImpl implements AccountService {
 
         return ResponseEntity.ok(account);
     }
+    public AccountResponseDTO getAccountById1(Long userId){
+        var account = accountRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "account is not found"));
+
+        return AccountResponseDTO.builder().
+
+                build();
+    }
 
     @Override
     public Account updateAccountById(Long userId, Account account, Float amount) {
         var newInfoAcc = accountRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User with id" + userId + "not found"));
 
         if (account.getFirstName() != null) {
             newInfoAcc.setFirstName(account.getFirstName());
@@ -88,7 +97,7 @@ public class AccountServiceImpl implements AccountService {
                     .amount(amount)
                     .build();
 
-            transactionRepository.save(transaction);
+          //  transactionRepository.save(transaction); //
 
             if (transaction.getAccountTo().equals(transaction.getAccountFrom()) && amount > 0) {
                 transaction.setType(TransactionType.DEPOSIT);
@@ -99,6 +108,7 @@ public class AccountServiceImpl implements AccountService {
             if (!transaction.getAccountTo().equals(transaction.getAccountFrom())) {
                 transaction.setType(TransactionType.TRANSFER);
             }
+            //
             transactionRepository.save(transaction);
             newInfoAcc.getTransactions().add(transaction);
             accountRepository.save(newInfoAcc);
@@ -166,16 +176,20 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void transferMoneyBetweenAccounts(Long idTo, Long idFrom, Float amount, Account account, Long id) {
-        Account accountTo = accountRepository.findById(idTo).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
-        Account accountFrom = accountRepository.findById(idFrom).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
-        if (!isAccountPresent(idTo)) {
-            throw new ResponseStatusException(NOT_FOUND, "destination account is not found");
-        }
-        if (!isAccountPresent(idFrom)) {
-            throw new ResponseStatusException(NOT_FOUND, "source account is not found");
-        }
+        Account accountTo = accountRepository.findById(idTo).orElseThrow(() ->
+                                                            new ResponseStatusException
+                                                                    (NOT_FOUND, "destination account is not found"));
+        Account accountFrom = accountRepository.findById(idFrom).orElseThrow(() ->
+                                                            new ResponseStatusException
+                                                                    (NOT_FOUND,"destination account is not found"));
+//        if (!isAccountPresent(idTo)) {
+//            throw new ResponseStatusException(NOT_FOUND, "destination account is not found");
+//        }
+//        if (!isAccountPresent(idFrom)) {
+//            throw new ResponseStatusException(NOT_FOUND, "source account is not found");
+//        }
         if (!isEnoughMoney(amount, idFrom)) {
-            throw new ResponseStatusException(BAD_REQUEST, "source account balance" + idFrom+ "is lower than the transferred amount");
+            throw new ResponseStatusException(BAD_REQUEST, "source account balance is lower than the transferred amount");
         }
 
         accountTo.setBalance(account.getBalance() + amount);
@@ -188,7 +202,7 @@ public class AccountServiceImpl implements AccountService {
                 .type(TransactionType.TRANSFER)
                 .amount(amount)
                 .build();
-        System.out.println(transaction);
+
         transactionRepository.save(transaction);
         accountFrom.getTransactions().add(transaction);
         accountRepository.save(accountFrom);
