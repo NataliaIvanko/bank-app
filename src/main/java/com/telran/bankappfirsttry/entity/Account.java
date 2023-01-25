@@ -6,6 +6,7 @@ import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ import java.util.Set;
 @Table(name = "account")
 
 
-public class Account {
+public class Account implements Serializable {
 
     @Id //primary key. Чтобы создать таблицу в бд с уникальным полем, досаточно аннотации
     @GeneratedValue(strategy = GenerationType.IDENTITY)

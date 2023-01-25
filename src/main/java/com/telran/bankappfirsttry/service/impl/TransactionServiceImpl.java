@@ -38,7 +38,7 @@ private  EntityManager entityManager;
         Map<String, Object> searchParams = new HashMap<>();
         StringBuilder query = new StringBuilder();
         // select * from account_details where ad.account.name = :name and ad.country = :country
-        query.append("from Transaction tr where 1=1");
+        query.append("from Transaction tr where 1=1");  //make injection table name
 
         if(transaction.getDateTime() != null){
             query.append(" and tr.dateTime = :dateTime ");

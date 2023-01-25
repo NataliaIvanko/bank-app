@@ -1,10 +1,12 @@
 package com.telran.bankappfirsttry.dto;
 
+import com.telran.bankappfirsttry.entity.Transaction;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,4 +19,5 @@ public class AccountRequestDTO {
     private String email;
     private Instant creationDate;
     private Float balance;
+    private Set<Transaction> transactions;
 }

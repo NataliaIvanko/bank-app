@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
@@ -30,44 +31,29 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    //  private final static AtomicInteger userId = new AtomicInteger();
-  //  private final Map<Long, Account> accountsMap = new HashMap<Long, Account>();
-
-//    private final List<Transaction> transactionList = new ArrayList<>();
-
     @Override
     public void createAccount(AccountRequestDTO request) {
         Account account = ConverterDTO.convertDtoToAccount(request);
         accountRepository.save(account);
-        //        var dbAccount = Account.builder()
-//                .firstName(request.getFirstName())
-//                .lastName(request.getLastName())
-//                .country(request.getCountry())
-//                .city(request.getCity())
-//                .email(request.getEmail())
-//                .creationDate(Instant.now())
-//                .balance(request.getBalance())
-//                //    .transactions(account.getTransactions())//make null?? since we create an account without a transaction
-//                .build();
-
     }
 
-    @Override
-    public ResponseEntity<Account> getAccountById(Long userId) {
-        var account = accountRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "account is not found"));
+    private ResponseEntity<Account> getAccountById1(Long userId) {
+        var account = accountRepository.findById(userId).orElseThrow(() ->
+                new ResponseStatusException(NOT_FOUND, "account is not found"));
 
         return ResponseEntity.ok(account);
     }
-    public AccountResponseDTO getAccountById1(Long userId){
-        var account = accountRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "account is not found"));
-
-        return AccountResponseDTO.builder().
-
-                build();
+    @Override
+    public AccountResponseDTO getAccountById(Long userId) {
+        var account = accountRepository.findById(userId).orElseThrow(
+                                                () -> new ResponseStatusException(
+                                                        NOT_FOUND, "account is not found"));
+                return ConverterDTO.convertAccountToDTO(account);
     }
 
+    @Transactional
     @Override
-    public Account updateAccountById(Long userId, Account account, Float amount) {
+    public void updateAccountById(Long userId, Float amount, AccountRequestDTO account) {
         var newInfoAcc = accountRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User with id" + userId + "not found"));
 
@@ -87,9 +73,8 @@ public class AccountServiceImpl implements AccountService {
             newInfoAcc.setEmail(account.getEmail());
         }
         if (account.getBalance() != null) {
-
             newInfoAcc.setBalance(account.getBalance() + amount);
-            // Transaction transaction = new Transaction();
+
             var transaction = Transaction.builder()
                     .accountTo(userId)
                     .accountFrom(userId)
@@ -97,10 +82,9 @@ public class AccountServiceImpl implements AccountService {
                     .amount(amount)
                     .build();
 
-          //  transactionRepository.save(transaction); //
-
             if (transaction.getAccountTo().equals(transaction.getAccountFrom()) && amount > 0) {
                 transaction.setType(TransactionType.DEPOSIT);
+                System.out.println("deposit");
             }
             if (transaction.getAccountTo().equals(transaction.getAccountFrom()) && amount < 0) {
                 transaction.setType(TransactionType.WITHDRAW);
@@ -108,80 +92,90 @@ public class AccountServiceImpl implements AccountService {
             if (!transaction.getAccountTo().equals(transaction.getAccountFrom())) {
                 transaction.setType(TransactionType.TRANSFER);
             }
-            //
             transactionRepository.save(transaction);
             newInfoAcc.getTransactions().add(transaction);
             accountRepository.save(newInfoAcc);
         }
         accountRepository.save(newInfoAcc);
-        return newInfoAcc;
     }
 
-    @Override
-    public List<Account> getAccountsFiltered(List<String> city, Instant creationDate, String sort) {//date, city, country, sorted by date asc, desc
+//
+@Override
+public List<AccountResponseDTO> getAccountsFiltered(List<String> city, Instant creationDate, String sort) {
 
-        if (city != null && creationDate == null) { //city
-            if (sort == null) {
-                return accountRepository.findAllByCityInIgnoreCase(city).stream()
-                        .toList();
-            }
-            if (sort.equalsIgnoreCase("creationDate")) { //city and crDate
-                return accountRepository.findAllByCityInIgnoreCase(city).stream()
-                        .sorted(Comparator.comparing(Account::getCreationDate))
-                        .toList();
-            }
-            if (sort.equalsIgnoreCase("-creationDate")) {
-                return accountRepository.findAllByCityInIgnoreCase(city).stream()
-                        .sorted(Comparator.comparing(Account::getCreationDate, Comparator.reverseOrder()))
-                        .toList();
-            }
+    if (city != null && creationDate == null) { //city
+        if (sort == null) {
+            return accountRepository.findAllByCityInIgnoreCase(city).stream()
+                    .map(ConverterDTO::convertAccountToDTO)
+                    .toList();
         }
-        if (city == null && creationDate != null) {
+        if (sort.equalsIgnoreCase("creationDate")) { //city and crDate
+            return accountRepository.findAllByCityInIgnoreCase(city).stream()
+                    .sorted(Comparator.comparing(Account::getCreationDate))
+                    .map(ConverterDTO::convertAccountToDTO)
+                    .toList();
+        }
+        if (sort.equalsIgnoreCase("-creationDate")) {
+            return accountRepository.findAllByCityInIgnoreCase(city).stream()
+                    .sorted(Comparator.comparing(Account::getCreationDate, Comparator.reverseOrder()))
+                    .map(ConverterDTO::convertAccountToDTO)
+                    .toList();
+        }
+    }
+    if (city == null && creationDate != null) {
+        if (sort == null) {
+            return accountRepository.findAccountByCreationDate(creationDate).stream()
+                    .map(ConverterDTO::convertAccountToDTO)
+                    .toList();
+        }
+        if (sort.equalsIgnoreCase("creationDate")) {
+            return accountRepository.findAccountByCreationDate(creationDate).stream()
+                    .sorted(Comparator.comparing(Account::getCreationDate))
+                    .map(ConverterDTO::convertAccountToDTO)
+                    .toList();
+        }
+        if (sort.equalsIgnoreCase("-creationDate")) {
+            return accountRepository.findAccountByCreationDate(creationDate).stream()
+                    .sorted(Comparator.comparing(Account::getCreationDate, Comparator.reverseOrder()))
+                    .map(ConverterDTO::convertAccountToDTO)
+                    .toList();
+        }
+    }
+    if (city != null)
+        if (creationDate != null) {
             if (sort == null) {
-                return accountRepository.findAccountByCreationDate(creationDate).stream()
+                return accountRepository.findAccountByCityInAndCreationDate(city, creationDate).stream()
+                        .map(ConverterDTO::convertAccountToDTO)
                         .toList();
             }
             if (sort.equalsIgnoreCase("creationDate")) {
-                return accountRepository.findAccountByCreationDate(creationDate).stream()
+                return accountRepository.findAccountByCityInAndCreationDate(city, creationDate).stream()
                         .sorted(Comparator.comparing(Account::getCreationDate))
+                        .map(ConverterDTO::convertAccountToDTO)
                         .toList();
             }
             if (sort.equalsIgnoreCase("-creationDate")) {
-                return accountRepository.findAccountByCreationDate(creationDate).stream()
+                return accountRepository.findAccountByCityInAndCreationDate(city, creationDate).stream()
                         .sorted(Comparator.comparing(Account::getCreationDate, Comparator.reverseOrder()))
+                        .map(ConverterDTO::convertAccountToDTO)
                         .toList();
             }
         }
-        if (city != null)
-            if (creationDate != null) {
-                if (sort == null) {
-                    return accountRepository.findAccountByCityInAndCreationDate(city, creationDate).stream()
-                            .toList();
-                }
-                if (sort.equalsIgnoreCase("creationDate")) {
-                    return accountRepository.findAccountByCityInAndCreationDate(city, creationDate).stream()
-                            .sorted(Comparator.comparing(Account::getCreationDate))
-                            .toList();
-                }
-                if (sort.equalsIgnoreCase("-creationDate")) {
-                    return accountRepository.findAccountByCityInAndCreationDate(city, creationDate).stream()
-                            .sorted(Comparator.comparing(Account::getCreationDate, Comparator.reverseOrder()))
-                            .toList();
-                }
-            }
-        return accountRepository.findAll().stream()
-                .sorted(Comparator.comparing(Account::getUserId))
-                .toList();
-    }
+    return accountRepository.findAll().stream()
+            .sorted(Comparator.comparing(Account::getUserId))
+            .map(ConverterDTO::convertAccountToDTO)
+            .toList();
+}
 
+    @Transactional
     @Override
     public void transferMoneyBetweenAccounts(Long idTo, Long idFrom, Float amount, Account account, Long id) {
         Account accountTo = accountRepository.findById(idTo).orElseThrow(() ->
-                                                            new ResponseStatusException
-                                                                    (NOT_FOUND, "destination account is not found"));
+                new ResponseStatusException
+                        (NOT_FOUND, "destination account is not found"));
         Account accountFrom = accountRepository.findById(idFrom).orElseThrow(() ->
-                                                            new ResponseStatusException
-                                                                    (NOT_FOUND,"destination account is not found"));
+                new ResponseStatusException
+                        (NOT_FOUND, "destination account is not found"));
 //        if (!isAccountPresent(idTo)) {
 //            throw new ResponseStatusException(NOT_FOUND, "destination account is not found");
 //        }
@@ -209,6 +203,7 @@ public class AccountServiceImpl implements AccountService {
         accountTo.getTransactions().add(transaction);
         accountRepository.save(accountTo);
     }
+
     private boolean isAccountPresent(Long id) {
         return accountRepository.findById(id).stream()
                 .anyMatch(acc -> acc.getUserId().equals(id));
@@ -226,5 +221,110 @@ public class AccountServiceImpl implements AccountService {
 
 }
 
+//    @Override
+//    public Account updateAccountById(Long userId, Float amount, Account account) {
+//        var newInfoAcc = accountRepository.findById(userId)
+//                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User with id" + userId + "not found"));
+//
+//        if (account.getFirstName() != null) {
+//            newInfoAcc.setFirstName(account.getFirstName());
+//        }
+//        if (account.getLastName() != null) {
+//            newInfoAcc.setLastName(account.getLastName());
+//        }
+//        if (account.getCountry() != null) {
+//            newInfoAcc.setCountry(account.getCountry());
+//        }
+//        if (account.getCity() != null) {
+//            newInfoAcc.setCity(account.getCity());
+//        }
+//        if (account.getEmail() != null) {
+//            newInfoAcc.setEmail(account.getEmail());
+//        }
+//        if (account.getBalance() != null) {
+//            newInfoAcc.setBalance(account.getBalance() + amount);
+//            // Transaction transaction = new Transaction();
+//            var transaction = Transaction.builder()
+//                    .accountTo(userId)
+//                    .accountFrom(userId)
+//                    .dateTime(Instant.now())
+//                    .amount(amount)
+//                    .build();
+//
+//            //  transactionRepository.save(transaction); //
+//
+//            if (transaction.getAccountTo().equals(transaction.getAccountFrom()) && amount > 0) {
+//                transaction.setType(TransactionType.DEPOSIT);
+//            }
+//            if (transaction.getAccountTo().equals(transaction.getAccountFrom()) && amount < 0) {
+//                transaction.setType(TransactionType.WITHDRAW);
+//            }
+//            if (!transaction.getAccountTo().equals(transaction.getAccountFrom())) {
+//                transaction.setType(TransactionType.TRANSFER);
+//            }
+//            //
+//            transactionRepository.save(transaction);
+//            newInfoAcc.getTransactions().add(transaction);
+//            accountRepository.save(newInfoAcc);
+//        }
+//        accountRepository.save(newInfoAcc);
+//        return newInfoAcc;
+//    }
+//@Override
+//    public List<Account> getAccountsFiltered(List<String> city, Instant creationDate, String sort) {//date, city, country, sorted by date asc, desc
+//
+//        if (city != null && creationDate == null) { //city
+//            if (sort == null) {
+//                return accountRepository.findAllByCityInIgnoreCase(city).stream()
+//                        .toList();
+//            }
+//            if (sort.equalsIgnoreCase("creationDate")) { //city and crDate
+//                return accountRepository.findAllByCityInIgnoreCase(city).stream()
+//                        .sorted(Comparator.comparing(Account::getCreationDate))
+//                        .toList();
+//            }
+//            if (sort.equalsIgnoreCase("-creationDate")) {
+//                return accountRepository.findAllByCityInIgnoreCase(city).stream()
+//                        .sorted(Comparator.comparing(Account::getCreationDate, Comparator.reverseOrder()))
+//                        .toList();
+//            }
+//        }
+//        if (city == null && creationDate != null) {
+//            if (sort == null) {
+//                return accountRepository.findAccountByCreationDate(creationDate).stream()
+//                        .toList();
+//            }
+//            if (sort.equalsIgnoreCase("creationDate")) {
+//                return accountRepository.findAccountByCreationDate(creationDate).stream()
+//                        .sorted(Comparator.comparing(Account::getCreationDate))
+//                        .toList();
+//            }
+//            if (sort.equalsIgnoreCase("-creationDate")) {
+//                return accountRepository.findAccountByCreationDate(creationDate).stream()
+//                        .sorted(Comparator.comparing(Account::getCreationDate, Comparator.reverseOrder()))
+//                        .toList();
+//            }
+//        }
+//        if (city != null)
+//            if (creationDate != null) {
+//                if (sort == null) {
+//                    return accountRepository.findAccountByCityInAndCreationDate(city, creationDate).stream()
+//                            .toList();
+//                }
+//                if (sort.equalsIgnoreCase("creationDate")) {
+//                    return accountRepository.findAccountByCityInAndCreationDate(city, creationDate).stream()
+//                            .sorted(Comparator.comparing(Account::getCreationDate))
+//                            .toList();
+//                }
+//                if (sort.equalsIgnoreCase("-creationDate")) {
+//                    return accountRepository.findAccountByCityInAndCreationDate(city, creationDate).stream()
+//                            .sorted(Comparator.comparing(Account::getCreationDate, Comparator.reverseOrder()))
+//                            .toList();
+//                }
+//            }
+//        return accountRepository.findAll().stream()
+//                .sorted(Comparator.comparing(Account::getUserId))
+//                .toList();
+//    }
 
 
