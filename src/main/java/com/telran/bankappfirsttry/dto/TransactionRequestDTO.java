@@ -12,12 +12,12 @@ import java.time.Instant;
 @NoArgsConstructor
 @Data
 @Builder
-public class TransactionResponseDTO {
-
-    private Long id;
+public class TransactionRequestDTO {
+    private Long accountTo;
+    private Long accountFrom;
     private Instant dateTime;
-    private TransactionType type;
     private Float amount;
-    private Long idTo;
-    private Long idFrom;
+    private TransactionType type;
+
+
 }

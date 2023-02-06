@@ -14,7 +14,7 @@ import java.util.Set;
 @Data
 @Builder
 public class AccountResponseDTO {
-    private Long id;
+    private Long userId;
     private String firstName;
     private String lastName;
     private String country;

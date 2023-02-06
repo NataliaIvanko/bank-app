@@ -2,9 +2,7 @@ package com.telran.bankappfirsttry.controller;
 
 import com.telran.bankappfirsttry.dto.AccountRequestDTO;
 import com.telran.bankappfirsttry.dto.AccountResponseDTO;
-import com.telran.bankappfirsttry.entity.Account;
-import com.telran.bankappfirsttry.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.telran.bankappfirsttry.service.interfaces.AccountService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -12,10 +10,9 @@ import java.util.List;
 
 
 @RestController
-public class AccountController {
 
-    @Autowired
-    private AccountService accountService;
+public class AccountController {
+    private final AccountService accountService;
 
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
@@ -31,10 +28,10 @@ public class AccountController {
         return accountService.getAccountById(userId);
     }
 
-    @GetMapping("/accounts")   //creationDate
+    @GetMapping("/accounts")
     public List<AccountResponseDTO> getAccountsFiltered(@RequestParam(value = "city", required = false) List<String> city,
-                                             @RequestParam(value = "date", required = false) Instant creationDate,
-                                             @RequestParam(value = "sort", required = false) String sort) {
+                                                        @RequestParam(value = "date", required = false) Instant creationDate,
+                                                        @RequestParam(value = "sort", required = false) String sort) {
         return accountService.getAccountsFiltered(city, creationDate, sort);
     }
 
@@ -50,15 +47,14 @@ public class AccountController {
                                              @RequestParam(value = "idTo", required = true) Long idTo,
                                              @RequestParam(value = "amount", required = true) Float amount,
                                              @RequestParam(value = "id", required = false) Long id,
-                                             @RequestBody Account account) {
+                                             @RequestBody AccountRequestDTO account) {
         accountService.transferMoneyBetweenAccounts(idFrom, idTo, amount, account, id);
     }
-    /*
+
     @DeleteMapping("/accounts/{userId}")
-    public void deleteAccountByUserId(@PathVariable ("userId") Long userId){
+    public void deleteAccountByUserId(@PathVariable("userId") Long userId) {
         accountService.deleteAccountByUserId(userId);
     }
 
-     */
 
 }

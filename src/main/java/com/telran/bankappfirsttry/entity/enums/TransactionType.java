@@ -1,4 +1,4 @@
-package com.telran.bankappfirsttry.entity;
+package com.telran.bankappfirsttry.entity.enums;
 
 public enum TransactionType {
     WITHDRAW,

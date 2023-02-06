@@ -1,5 +1,6 @@
 package com.telran.bankappfirsttry.entity;
 
+import com.telran.bankappfirsttry.entity.enums.TransactionType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.time.Instant;
 @Table(name = "transaction")
 public class Transaction {
 
-    @Id //primary key
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")
     private Long id;

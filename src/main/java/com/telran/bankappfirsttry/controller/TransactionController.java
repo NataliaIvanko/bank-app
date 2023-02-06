@@ -1,9 +1,9 @@
 package com.telran.bankappfirsttry.controller;
 
-import com.telran.bankappfirsttry.entity.Transaction;
-import com.telran.bankappfirsttry.service.TransactionService;
+import com.telran.bankappfirsttry.dto.TransactionRequestDTO;
+import com.telran.bankappfirsttry.dto.TransactionResponseDTO;
+import com.telran.bankappfirsttry.service.interfaces.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -19,26 +19,20 @@ public class TransactionController {
     private EntityManager entityManager;
 
     @GetMapping("/transactions/{id}")
-    public ResponseEntity<Transaction> getTransactionByID(@PathVariable("id") Long id) {
+    public TransactionResponseDTO getTransactionByID(@PathVariable("id") Long id) {
         return transactionService.getTransactionByID(id);
+    }
 
-
+    @GetMapping("/transactions")
+    public List<TransactionResponseDTO> getAllTransactions(@RequestBody TransactionRequestDTO requestDTO) {
+        return transactionService.getAllTransactions(requestDTO);
     }
 
     @PostMapping("/transactions/search")
-    public List<Transaction> getTransactionsFiltered(  @RequestBody Transaction transaction,
-                                                       @RequestParam(value = "sort", required = false) String sort){
+    public List<TransactionResponseDTO> getTransactionsFiltered(@RequestBody TransactionRequestDTO transaction,
+                                                                @RequestParam(value = "sort", required = false) String sort) {
         return transactionService.getTransactionsFiltered(transaction, sort);
     }
 
-     /*
-    @GetMapping("/transaction")
-    public List<Transaction> getTransactionsFiltered(@RequestParam(value = "type", required = false) String type,
-                                                     @RequestParam(value = "date", required = false) LocalDateTime date,
-                                                     @RequestParam(value = "sort", required = false) String sort,
-                                                     @RequestBody Transaction transaction){
-        return transactionService.getTransactionsByFilters(type, date,sort, transaction);
-    }
 
-     */
 }

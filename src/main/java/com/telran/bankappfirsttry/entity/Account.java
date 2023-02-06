@@ -2,11 +2,9 @@ package com.telran.bankappfirsttry.entity;
 
 //import jakarta.persistence.*;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.Set;
 
@@ -21,18 +19,16 @@ import java.util.Set;
 @Table(name = "account")
 
 
-public class Account implements Serializable {
+public class Account {
 
-    @Id //primary key. Чтобы создать таблицу в бд с уникальным полем, досаточно аннотации
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
 
-    @NotNull
     @Column(name = "first_name")
     private String firstName;
 
-    @NotNull
     @Column(name = "last_name")
     private String lastName;
 
@@ -42,8 +38,7 @@ public class Account implements Serializable {
     @Column(name = "city")
     private String city;
 
-  //  @Email()
-    @Column(name = "email")
+     @Column(name = "email")
     private String email;
 
     @Column(name = "creation_date")
@@ -52,20 +47,10 @@ public class Account implements Serializable {
     @Column(name = "balance")
     private Float balance;
 
-  //  @Column(name="transactions")
-  //  private Long transactionId;
-
-    @ManyToMany
+     @ManyToMany
     @JoinTable(name = "accounts_transactions",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "transaction_id")})
     private Set<Transaction> transactions;
 
-   // public void addTransactionToList(Long id){
-    //    this.transactions.add(id);
- //  }
-
-   // private String userLogin;
-  //  private String userPassword;
-// private Long UserTypeId;
 }
