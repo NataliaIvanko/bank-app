@@ -11,8 +11,4 @@ public interface AccountMapper {
     AccountResponseDTO accountToDto (Account account);
     Account dtoToAccount(AccountRequestDTO requestDTO);
 
-
-
-
-
 }
