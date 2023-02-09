@@ -5,6 +5,7 @@ import com.telran.bankappfirsttry.dto.AccountResponseDTO;
 import com.telran.bankappfirsttry.service.interfaces.AccountService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.Instant;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class AccountController {
     }
 
     @PostMapping("/accounts")
-    public void createAccount(@RequestBody AccountRequestDTO requestDTO) { //check if data valid.
+    public void createAccount(@RequestBody @Valid AccountRequestDTO requestDTO) { //check if data valid.
         accountService.createAccount(requestDTO);
     }
 

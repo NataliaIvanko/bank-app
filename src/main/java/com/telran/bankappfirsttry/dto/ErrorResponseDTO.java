@@ -13,5 +13,7 @@ import org.springframework.http.HttpStatus;
 public class ErrorResponseDTO {
     private HttpStatus status;
     private String message;
+    private int statusCode;
+    private Object errors;
 
 }
