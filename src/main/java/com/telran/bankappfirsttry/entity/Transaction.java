@@ -1,6 +1,7 @@
 package com.telran.bankappfirsttry.entity;
 
 import com.telran.bankappfirsttry.entity.enums.TransactionType;
+import com.telran.bankappfirsttry.entity.enums.TransactionTypeConverter;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,6 +27,7 @@ public class Transaction {
     private Instant dateTime;
 
     @Column(name = "transaction_type")
+    @Convert(converter = TransactionTypeConverter.class)
     private TransactionType type;
 
     @Column(name = "amount")
