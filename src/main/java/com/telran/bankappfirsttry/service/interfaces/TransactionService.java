@@ -9,6 +9,6 @@ public interface TransactionService {
    TransactionResponseDTO getTransactionByID(Long id);
 
     List<TransactionResponseDTO> getTransactionsFiltered(TransactionRequestDTO transaction, String sort);
-    List<TransactionResponseDTO> getAllTransactions (TransactionRequestDTO requestDTO);
+    List<TransactionResponseDTO> getAllTransactions ();
 
 }

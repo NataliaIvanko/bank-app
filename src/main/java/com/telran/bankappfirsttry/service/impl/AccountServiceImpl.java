@@ -9,8 +9,7 @@ import com.telran.bankappfirsttry.mapper.AccountMapper;
 import com.telran.bankappfirsttry.repository.AccountRepository;
 import com.telran.bankappfirsttry.repository.TransactionRepository;
 import com.telran.bankappfirsttry.service.interfaces.AccountService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,13 +21,13 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Service
-
+@AllArgsConstructor
 public class AccountServiceImpl implements AccountService {
-    @Autowired
+
     private AccountRepository accountRepository;
-    @Autowired
+
     private TransactionRepository transactionRepository;
     private final AccountMapper accountMapper;
 
@@ -68,13 +67,17 @@ public class AccountServiceImpl implements AccountService {
         if (account.getEmail() != null) {
             newInfoAcc.setEmail(account.getEmail());
         }
-        if (account.getBalance() != null) {
-            newInfoAcc.setBalance(account.getBalance() + amount);
-            var transaction = createTransaction(userId, userId, amount);
-            newInfoAcc.getTransactions().add(transaction);
-            accountRepository.save(newInfoAcc);
+      accountRepository.save(newInfoAcc);
+    }
+    @Override
+    public void updateBalance(Long id, Float amount, AccountRequestDTO requestDTO){
+       var newInfoAccount = findAccountById(id);
+        if(requestDTO.getBalance() != null){
+            newInfoAccount.setBalance(requestDTO.getBalance()+amount);
+            var transaction = createTransaction(id, id, amount);
+            newInfoAccount.getTransactions().add(transaction);
+            accountRepository.save(newInfoAccount);
         }
-        accountRepository.save(newInfoAcc);
     }
 
     @Transactional
@@ -86,7 +89,6 @@ public class AccountServiceImpl implements AccountService {
         if (!isEnoughMoney(amount, idFrom)) {
             throw new ResponseStatusException(BAD_REQUEST, "source account balance is lower than the transferred amount");
         }
-
         accountTo.setBalance(account.getBalance() + amount);
         accountFrom.setBalance(account.getBalance() - amount);
 

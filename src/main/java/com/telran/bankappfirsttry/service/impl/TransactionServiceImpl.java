@@ -40,10 +40,11 @@ public class TransactionServiceImpl implements TransactionService {
 
 
     @Override
-    public List<TransactionResponseDTO> getAllTransactions(TransactionRequestDTO requestDTO) {
+    public List<TransactionResponseDTO> getAllTransactions() {
         List<Transaction> transactions = transactionRepository.findAll().stream()
                 .sorted(Comparator.comparing(Transaction::getId))
                 .toList();
+
         return transactionMapper.transactionListToDto(transactions);
     }
 
@@ -60,7 +61,9 @@ public class TransactionServiceImpl implements TransactionService {
         }
         if (transaction.getType() != null) {
             query.append(" and tr.type = :type ");
+            System.out.println(transaction.getType());
             searchParams.put("type", transaction.getType());
+
         }
         if (transaction.getType() != null && sort != null) {
             if (sort.equals("-creationDate")) {

@@ -13,7 +13,6 @@ public enum TransactionType {
 
     WITHDRAW(1, "withdraw"),
     TRANSFER(2, "transfer"),
-
     DEPOSIT(3, "deposit");
 
     private final Integer typeId;

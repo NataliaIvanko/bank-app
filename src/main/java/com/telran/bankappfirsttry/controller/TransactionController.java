@@ -24,8 +24,8 @@ public class TransactionController {
     }
 
     @GetMapping("/transactions")
-    public List<TransactionResponseDTO> getAllTransactions(@RequestBody TransactionRequestDTO requestDTO) {
-        return transactionService.getAllTransactions(requestDTO);
+    public List<TransactionResponseDTO> getAllTransactions() {
+        return transactionService.getAllTransactions();
     }
 
     @PostMapping("/transactions/search")

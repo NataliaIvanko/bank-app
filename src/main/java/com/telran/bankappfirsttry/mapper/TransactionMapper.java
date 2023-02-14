@@ -9,6 +9,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface TransactionMapper {
 
-    TransactionResponseDTO transactionToDto (Transaction transaction);
+
     List<TransactionResponseDTO> transactionListToDto(List<Transaction> transactions);
+    TransactionResponseDTO transactionToDto (Transaction transaction);
 }
