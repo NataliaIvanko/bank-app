@@ -11,10 +11,8 @@ import java.util.List;
 
 
 @RestController
-
 public class AccountController {
     private final AccountService accountService;
-
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
@@ -41,6 +39,12 @@ public class AccountController {
                                   @RequestParam(value = "amount", required = false) Float amount,
                                   @RequestBody AccountRequestDTO account) {
         accountService.updateAccountById(userId, amount, account);
+    }
+    @PatchMapping("/accounts/balance/{userId}")
+            public void updateBalance(@PathVariable("userId") Long id,
+                                      @RequestParam(value = "amount") Float amount,
+                                     @RequestBody AccountRequestDTO requestDTO){
+        accountService.updateBalance(id, amount,requestDTO);
     }
 
     @PutMapping("/accounts")

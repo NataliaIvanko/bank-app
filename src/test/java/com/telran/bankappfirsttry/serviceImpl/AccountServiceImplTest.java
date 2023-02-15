@@ -8,9 +8,9 @@ import com.telran.bankappfirsttry.repository.TransactionRepository;
 import com.telran.bankappfirsttry.service.impl.AccountServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.Nested;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -61,7 +61,7 @@ public class AccountServiceImplTest {
         @Test
         @DisplayName("should save() account")
         public void shouldSaveAccount() {
-            AccountRequestDTO request = AccountRequestDTO.builder()
+            AccountRequestDTO request = AccountRequestDTO.builder() //expected
                     .firstName("Jane")
                     .lastName("Atkins")
                     .country("Germany")
@@ -81,31 +81,60 @@ public class AccountServiceImplTest {
                     .balance(request.getBalance())
                     .build();
 
-            Mockito
-                    .when(accountRepository.findById(account.getUserId()))
-                    .thenReturn(Optional.of(account));
+//            Mockito
+//                    .when(accountRepository.findById(account.getUserId()))
+//                    .thenReturn(Optional.of(account));
 
             Mockito
                     .when(accountRepository.save(ArgumentMatchers.argThat(
                             savedAccount -> {
-                                return savedAccount.equals(request.getFirstName())
-                                        && savedAccount.getLastName().equals(request.getLastName())
-                                        && savedAccount.getCountry().equals(request.getCountry())
-                                        && savedAccount.getCity().equals(request.getCity())
-                                        && savedAccount.getEmail().equals(request.getEmail())
-                                        && savedAccount.getCreationDate().equals(request.getCreationDate())
-                                        && savedAccount.getBalance().equals(request.getBalance());
+                                return savedAccount.getUserId().equals(account.getUserId())
+                                        && savedAccount.getFirstName().equals(account.getFirstName())
+                                        && savedAccount.getLastName().equals(account.getLastName())
+                                        && savedAccount.getCountry().equals(account.getCountry())
+                                        && savedAccount.getCity().equals(account.getCity())
+                                        && savedAccount.getEmail().equals(account.getEmail())
+                                        && savedAccount.getCreationDate().equals(account.getCreationDate())
+                                        && savedAccount.getBalance().equals(account.getBalance());
                             }
                     )))
                     .thenReturn(account);
 
-
+//            Mockito
+//                    .when(accountRepository.save(ArgumentMatchers.any()))
+//                            .thenReturn(account);
+            Mockito
+                    .when(mapper.dtoToAccount(request))
+                    .thenReturn(account);
             service.createAccount(request);
+//            Mockito - оба проходят тест
+//                    .verify(accountRepository, Mockito.times(1))
+//                    .save(ArgumentMatchers.argThat((passedIn)-> {
+//                        return passedIn.equals(account);
+//                    }));
+            Mockito.verify(accountRepository).save(account);
         }
     }
 
-}
+    @Nested
+    @DisplayName("deleteAccountById()")
+    class deleteAccountById {
+        @Test
+        @DisplayName("should call deleteAccountById() ")
+        public void shouldCallDeleteAccountById() {
+            Long requestedId = 1L;
+            Mockito.doNothing()
+                    .when(accountRepository)
+                    .deleteById(requestedId);
+            service.deleteAccountByUserId(requestedId);
 
+            Mockito.verify(accountRepository, Mockito.times(1))
+                    .deleteById(requestedId);
+
+
+        }
+    }
+}
 
 
 
