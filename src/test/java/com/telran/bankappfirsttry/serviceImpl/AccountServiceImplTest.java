@@ -81,10 +81,6 @@ public class AccountServiceImplTest {
                     .balance(request.getBalance())
                     .build();
 
-//            Mockito
-//                    .when(accountRepository.findById(account.getUserId()))
-//                    .thenReturn(Optional.of(account));
-
             Mockito
                     .when(accountRepository.save(ArgumentMatchers.argThat(
                             savedAccount -> {
@@ -98,8 +94,7 @@ public class AccountServiceImplTest {
                                         && savedAccount.getBalance().equals(account.getBalance());
                             }
                     )))
-                    .thenReturn(account);
-
+                   .thenReturn(account);
 //            Mockito
 //                    .when(accountRepository.save(ArgumentMatchers.any()))
 //                            .thenReturn(account);
@@ -107,11 +102,6 @@ public class AccountServiceImplTest {
                     .when(mapper.dtoToAccount(request))
                     .thenReturn(account);
             service.createAccount(request);
-//            Mockito - оба проходят тест
-//                    .verify(accountRepository, Mockito.times(1))
-//                    .save(ArgumentMatchers.argThat((passedIn)-> {
-//                        return passedIn.equals(account);
-//                    }));
             Mockito.verify(accountRepository).save(account);
         }
     }
@@ -136,7 +126,13 @@ public class AccountServiceImplTest {
     }
 }
 
+//            Mockito
+//                    .when(accountRepository.findById(account.getUserId()))
+//                    .thenReturn(Optional.of(account));
 
-
-
+//            Mockito - оба проходят тест
+//                    .verify(accountRepository, Mockito.times(1))
+//                    .save(ArgumentMatchers.argThat((passedIn)-> {
+//                        return passedIn.equals(account);
+//                    }));
 
