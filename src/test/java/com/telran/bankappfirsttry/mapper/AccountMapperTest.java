@@ -32,5 +32,12 @@ public class AccountMapperTest {
         Account expectedAccount = EntityCreator.getAccount();
         Assertions.assertEquals(expectedAccount, accountMapper.dtoToAccount(requestDTO));
     }
-
+    @Test
+    @DisplayName("mapping accountDto into account")
+    public void accountDtoToAccountPartially() {
+        AccountRequestDTO requestDTO = DtoCreator.getAccountRequestDto();
+        requestDTO.setFirstName("Jane");
+        Account expectedAccount = EntityCreator.getAccount();
+        Assertions.assertEquals(expectedAccount.getFirstName(), accountMapper.dtoToAccount(requestDTO).getFirstName());
+    }
 }
