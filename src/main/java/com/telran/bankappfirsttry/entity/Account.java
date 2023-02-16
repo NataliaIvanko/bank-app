@@ -38,7 +38,7 @@ public class Account {
     @Column(name = "city")
     private String city;
 
-     @Column(name = "email")
+    @Column(name = "email")
     private String email;
 
     @Column(name = "creation_date")
@@ -47,10 +47,12 @@ public class Account {
     @Column(name = "balance")
     private Float balance;
 
-     @ManyToMany
+    @ManyToMany
     @JoinTable(name = "accounts_transactions",
-    joinColumns = {@JoinColumn(name = "user_id")},
-    inverseJoinColumns = {@JoinColumn(name = "transaction_id")})
+            joinColumns = {
+            @JoinColumn(name = "user_id", referencedColumnName = "user_id")},
+            inverseJoinColumns = {
+            @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id")})
     private Set<Transaction> transactions;
 
 }

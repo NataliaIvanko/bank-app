@@ -25,21 +25,19 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Service
 @AllArgsConstructor
 public class AccountServiceImpl implements AccountService {
-
     private AccountRepository accountRepository;
-
     private TransactionRepository transactionRepository;
     private final AccountMapper accountMapper;
 
 
     @Override
-    public void createAccount(AccountRequestDTO request) { //done
+    public void createAccount(AccountRequestDTO request) {
         Account account = accountMapper.dtoToAccount(request);
         accountRepository.save(account);
     }
 
     @Override
-    public AccountResponseDTO getAccountById(Long userId) {         //done
+    public AccountResponseDTO getAccountById(Long userId) {
         var account = accountRepository.findById(userId).orElseThrow(
                 () -> new ResponseStatusException(
                         NOT_FOUND, "account is not found"));
@@ -48,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional
     @Override
-    public void updateAccountById(Long userId, Float amount, AccountRequestDTO account) { //almost done
+    public void updateAccountById(Long userId, Float amount, AccountRequestDTO account) {
         var newInfoAcc = accountRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User with id" + userId + "not found"));
 
@@ -82,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional
     @Override
-    public void transferMoneyBetweenAccounts(Long idTo, Long idFrom, Float amount, AccountRequestDTO account, Long id) {//done
+    public void transferMoneyBetweenAccounts(Long idTo, Long idFrom, Float amount, AccountRequestDTO account, Long id) {
         Account accountTo = findAccountById(idTo);
         Account accountFrom = findAccountById(idFrom);
 
@@ -198,14 +196,11 @@ public class AccountServiceImpl implements AccountService {
                 .sorted(Comparator.comparing(Account::getUserId))
                 .map(accountMapper::accountToDto)
                 .toList();
-
     }
-
     @Override
     public void deleteAccountByUserId(Long userId) {
         accountRepository.deleteById(userId);
     }
-
 }
 
 
