@@ -1,10 +1,7 @@
 package com.telran.bankappfirsttry.dto;
 
 import com.telran.bankappfirsttry.entity.Transaction;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
@@ -15,6 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Getter
 @Builder
 public class AccountRequestDTO {
     @NotBlank
