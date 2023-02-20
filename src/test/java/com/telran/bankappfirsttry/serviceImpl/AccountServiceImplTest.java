@@ -1,11 +1,14 @@
 package com.telran.bankappfirsttry.serviceImpl;
 
 import com.telran.bankappfirsttry.dto.AccountRequestDTO;
+import com.telran.bankappfirsttry.dto.AccountResponseDTO;
 import com.telran.bankappfirsttry.entity.Account;
 import com.telran.bankappfirsttry.mapper.AccountMapper;
 import com.telran.bankappfirsttry.repository.AccountRepository;
 import com.telran.bankappfirsttry.repository.TransactionRepository;
 import com.telran.bankappfirsttry.service.impl.AccountServiceImpl;
+import com.telran.bankappfirsttry.util.DtoCreator;
+import com.telran.bankappfirsttry.util.EntityCreator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Instant;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,30 +40,9 @@ public class AccountServiceImplTest {
     @DisplayName("createAccount()")
     class createAccount {
         @Test
-        @DisplayName("should throw 404 NOT_FOUND when no such account")
-        public void shouldThrow404WhenNoSuchAccount() {
-
-            Long accountId = 1L;
-            HttpStatus expectedStatus = HttpStatus.NOT_FOUND;
-            String expectedMessage = "account is not found";
-
-            Mockito
-                    .when(accountRepository.findById(accountId))
-                    .thenReturn(Optional.empty());
-            ResponseStatusException exception = Assertions.assertThrows(
-                    ResponseStatusException.class,
-                    () -> service.getAccountById(accountId)
-            );
-            Assertions.assertEquals(expectedStatus, exception.getStatus());
-            Assertions.assertEquals(expectedMessage, exception.getReason());
-
-
-        }
-
-        @Test
         @DisplayName("should save() account")
         public void shouldSaveAccount() {
-            AccountRequestDTO request = AccountRequestDTO.builder() //expected
+            AccountRequestDTO request = DtoCreator.getAccountRequestDto(); /*AccountRequestDTO.builder() //expected
                     .firstName("Jane")
                     .lastName("Atkins")
                     .country("Germany")
@@ -69,8 +50,8 @@ public class AccountServiceImplTest {
                     .email("ja@gmail.com")
                     .creationDate(Instant.now())
                     .balance(100F)
-                    .build();
-            Account account = Account.builder()
+                    .build();*/
+            Account account = EntityCreator.getAccount();/*Account.builder()
                     .userId(1L)
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
@@ -80,6 +61,8 @@ public class AccountServiceImplTest {
                     .creationDate(request.getCreationDate())
                     .balance(request.getBalance())
                     .build();
+                    */
+
 
             Mockito
                     .when(accountRepository.save(ArgumentMatchers.argThat(
@@ -105,7 +88,45 @@ public class AccountServiceImplTest {
             Mockito.verify(accountRepository).save(account);
         }
     }
+    @Nested
+    @DisplayName("getAccountById")
+    class getAccountById {
+        @Test
+        @DisplayName("should throw 404 NOT_FOUND when no such account")
+        public void shouldThrow404WhenNoSuchAccount() {
+            Long accountId = 1L;
+            HttpStatus expectedStatus = HttpStatus.NOT_FOUND;
+            String expectedMessage = "account is not found";
 
+            Mockito
+                    .when(accountRepository.findById(accountId))
+                    .thenReturn(Optional.empty());
+            ResponseStatusException exception = Assertions.assertThrows(
+                    ResponseStatusException.class,
+                    () -> service.getAccountById(accountId)
+            );
+            Assertions.assertEquals(expectedStatus, exception.getStatus());
+            Assertions.assertEquals(expectedMessage, exception.getReason());
+ //           Mockito.verify(accountRepository, Mockito.times(0)).save(account);
+        }
+        @Test
+        @DisplayName("should return dto when there is such an account")
+        public void shouldReturnDtoWhenThereIsSuchAnAccount(){
+            Long requestedId = 1L;
+            Account account = EntityCreator.getAccount();
+            AccountResponseDTO expectedResponse = DtoCreator.getAccountResponseDto();
+
+            Mockito
+                    .when(accountRepository.findById(requestedId))
+                    .thenReturn(Optional.of(account));
+            Mockito
+                    .when(mapper.accountToDto(account))
+                    .thenReturn(expectedResponse);
+            AccountResponseDTO actualResponseDto = service.getAccountById(requestedId);
+            Assertions.assertEquals(expectedResponse, actualResponseDto);
+        }
+
+    }
     @Nested
     @DisplayName("deleteAccountById()")
     class deleteAccountById {

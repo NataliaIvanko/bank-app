@@ -17,7 +17,7 @@ public class EntityCreator {
                 .city("Berlin")
                 .email("ja@gmail.com")
                // .creationDate(Instant.parse("2022-02-15T13:18:47.00Z"))
-                .creationDate(Instant.now())
+                .creationDate(DtoCreator.getAccountRequestDto().getCreationDate())
                 .balance(100F)
                 .build();
         return account;
@@ -25,7 +25,6 @@ public class EntityCreator {
     public static Transaction getTransaction(){
         Transaction transaction = Transaction.builder()
                 .id(1L)
-             //   .dateTime(Instant.parse("2022-02-15T13:18:47.00Z"))
                 .dateTime(Instant.now())
                 .type(TransactionType.DEPOSIT)
                 .amount(500F)

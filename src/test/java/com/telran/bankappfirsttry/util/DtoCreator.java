@@ -50,7 +50,7 @@ public class DtoCreator {
         return TransactionResponseDTO.builder()
                 .id(1L)
                 .dateTime(Instant.now())
-                .type(TransactionType.TRANSFER)
+                .type(EntityCreator.getTransaction().getType())
                 .amount(500F)
                 .idTo(1L)
                 .idFrom(2L)
