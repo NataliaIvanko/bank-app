@@ -6,8 +6,7 @@ import com.telran.bankappfirsttry.entity.Transaction;
 import com.telran.bankappfirsttry.mapper.TransactionMapper;
 import com.telran.bankappfirsttry.repository.TransactionRepository;
 import com.telran.bankappfirsttry.service.interfaces.TransactionService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,19 +20,18 @@ import java.util.Map;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
 
-    @Autowired
     private TransactionRepository transactionRepository;
-    @Autowired
+
     private EntityManager entityManager;
     private final TransactionMapper transactionMapper;
 
     @Override
     public TransactionResponseDTO getTransactionByID(Long id) {
         var transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Transaction not found"));
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "transaction is not found"));
 
         return transactionMapper.transactionToDto(transaction);
     }
