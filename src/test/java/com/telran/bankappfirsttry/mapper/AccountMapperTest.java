@@ -28,16 +28,16 @@ public class AccountMapperTest {
         AccountResponseDTO expectedDto = DtoCreator.getAccountResponseDto();
         Assertions.assertEquals(expectedDto, accountMapper.accountToDto(account));
     }
-    /*
+/*
     @Test
     @DisplayName("mapping accountDto into account")
-    public void accountDtoToAccount(){
+    public void accountDtoToAccount1(){
         AccountRequestDTO requestDTO = DtoCreator.getAccountRequestDto();
         Account expectedAccount = EntityCreator.getAccount();
         Assertions.assertEquals(expectedAccount, accountMapper.dtoToAccount(requestDTO));
     }
+*/
 
-     */
     @Test
     @DisplayName("mapping accountDto into account")
     public void accountDtoToAccount(){

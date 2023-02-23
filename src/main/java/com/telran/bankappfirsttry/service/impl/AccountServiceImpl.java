@@ -39,14 +39,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponseDTO getAccountById(Long userId) {
         var account = accountRepository.findById(userId).orElseThrow(
-                () -> new ResponseStatusException(
-                        NOT_FOUND, "account is not found"));
+                () -> new ResponseStatusException(NOT_FOUND, "account is not found"));
+
         return accountMapper.accountToDto(account);
     }
 
     @Transactional
     @Override
-    public void updateAccountById(Long userId, Float amount, AccountRequestDTO account) {
+    public void updateAccountById(Long userId, AccountRequestDTO account) {
         var newInfoAcc = accountRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User with id" + userId + "not found"));
 

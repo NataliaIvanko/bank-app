@@ -12,7 +12,7 @@ public interface AccountService {
     AccountResponseDTO getAccountById(Long userId);
     void updateBalance(Long id, Float amount, AccountRequestDTO requestDTO);
  //  void updateAccountById(Long userId, Float amount, /*TransactionRequestDTO request,*/ AccountRequestDTO account);
-   void updateAccountById(Long userId, Float amount, /*TransactionRequestDTO request,*/ AccountRequestDTO account);
+   void updateAccountById(Long userId, /*TransactionRequestDTO request,*/ AccountRequestDTO account);
    void transferMoneyBetweenAccounts(Long idTo, Long idFrom, Float amount, AccountRequestDTO account, Long id);
     void deleteAccountByUserId(Long userId);
 

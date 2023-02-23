@@ -31,7 +31,7 @@ public class TransactionMapperTest {
        compareListToListDto(listTransaction,actualResponseDto);
     }
 
-    @Test //DOES NOT WORK DUE TO MAPPER IMPLEMENTATION WHICH I HAVE NO INFLUENCE TO
+    @Test
     @DisplayName("mapping transaction to transaction response dto")
     public void transactionToTransactionResponseDto(){
         Transaction transaction = EntityCreator.getTransaction();

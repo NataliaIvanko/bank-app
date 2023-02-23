@@ -37,8 +37,8 @@ public class DtoCreator {
 
     public static TransactionRequestDTO getTransactionRequestDto() {
         return TransactionRequestDTO.builder()
-                .accountTo(1L)
-                .accountFrom(2L)
+                .accountFrom(1L)
+                .accountTo(2L)
                 .amount(500F)
                 .type(TransactionType.TRANSFER)
                 .dateTime(Instant.now())
@@ -52,8 +52,8 @@ public class DtoCreator {
                 .dateTime(Instant.now())
                 .type(EntityCreator.getTransaction().getType())
                 .amount(500F)
-                .idTo(1L)
-                .idFrom(2L)
+                .accountFrom(1L)
+                .accountTo(2L)
                 .build();
     }
 }

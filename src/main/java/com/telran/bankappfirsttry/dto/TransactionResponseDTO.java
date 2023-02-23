@@ -18,6 +18,6 @@ public class TransactionResponseDTO {
     private Instant dateTime;
     private TransactionType type;
     private Float amount;
-    private Long idTo;
-    private Long idFrom;
+    private Long accountFrom;
+    private Long accountTo;
 }

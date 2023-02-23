@@ -34,9 +34,9 @@ public class AccountController {
 
     @PatchMapping("/accounts/{userId}")
     public void updateAccountById(@PathVariable("userId") Long userId,
-                                  @RequestParam(value = "amount", required = false) Float amount,
+                                //  @RequestParam(value = "amount", required = false) Float amount,
                                   @RequestBody AccountRequestDTO account) {
-        accountService.updateAccountById(userId, amount, account);
+        accountService.updateAccountById(userId, account);
     }
     @PatchMapping("/accounts/balance/{userId}")
             public void updateBalance(@PathVariable("userId") Long id,

@@ -31,10 +31,8 @@ import java.util.Optional;
 public class TransactionServiceImplTest {
     @Mock
     TransactionRepository transactionRepository;
-
     @Mock
     TransactionMapper mapper;
-
     @InjectMocks
     TransactionServiceImpl service;
 

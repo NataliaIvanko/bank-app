@@ -42,28 +42,8 @@ public class AccountServiceImplTest {
         @Test
         @DisplayName("should save() account")
         public void shouldSaveAccount() {
-            AccountRequestDTO request = DtoCreator.getAccountRequestDto(); /*AccountRequestDTO.builder() //expected
-                    .firstName("Jane")
-                    .lastName("Atkins")
-                    .country("Germany")
-                    .city("Berlin")
-                    .email("ja@gmail.com")
-                    .creationDate(Instant.now())
-                    .balance(100F)
-                    .build();*/
-            Account account = EntityCreator.getAccount();/*Account.builder()
-                    .userId(1L)
-                    .firstName(request.getFirstName())
-                    .lastName(request.getLastName())
-                    .country(request.getCountry())
-                    .city(request.getCity())
-                    .email(request.getEmail())
-                    .creationDate(request.getCreationDate())
-                    .balance(request.getBalance())
-                    .build();
-                    */
-
-
+            AccountRequestDTO request = DtoCreator.getAccountRequestDto();
+            Account account = EntityCreator.getAccount();
             Mockito
                     .when(accountRepository.save(ArgumentMatchers.argThat(
                             savedAccount -> {
@@ -95,6 +75,7 @@ public class AccountServiceImplTest {
         @DisplayName("should throw 404 NOT_FOUND when no such account")
         public void shouldThrow404WhenNoSuchAccount() {
             Long accountId = 1L;
+            Account account = EntityCreator.getAccount();
             HttpStatus expectedStatus = HttpStatus.NOT_FOUND;
             String expectedMessage = "account is not found";
 
@@ -107,7 +88,7 @@ public class AccountServiceImplTest {
             );
             Assertions.assertEquals(expectedStatus, exception.getStatus());
             Assertions.assertEquals(expectedMessage, exception.getReason());
- //           Mockito.verify(accountRepository, Mockito.times(0)).save(account);
+            Mockito.verify(accountRepository, Mockito.times(0)).save(account);
         }
         @Test
         @DisplayName("should return dto when there is such an account")
@@ -141,19 +122,60 @@ public class AccountServiceImplTest {
 
             Mockito.verify(accountRepository, Mockito.times(1))
                     .deleteById(requestedId);
+        }
+    }
+    @Nested
+    @DisplayName("updateAccountById()")
+    class updateAccountById{
+        @Test
+        @DisplayName("should throw 404 not found exception when there is no such an account")
+        void ShouldThrowNotFoundWhenAccountDoesNotExist(){
+            Long requestedId = 1L;
+            Float amount = 500F;
+            AccountRequestDTO account = DtoCreator.getAccountRequestDto();
+            HttpStatus expectedStatus = HttpStatus.NOT_FOUND;
+            String expectedMessage = "User with id" + requestedId + "not found";
+
+            Mockito
+                    .when(accountRepository.findById(requestedId))
+                    .thenReturn(Optional.empty());
+            ResponseStatusException exception = Assertions.assertThrows(
+                    ResponseStatusException.class,
+                    ()-> service.updateAccountById(requestedId, account)
+            );
+            Assertions.assertEquals(expectedStatus,exception.getStatus());
+            Assertions.assertEquals(expectedMessage,exception.getReason());
+        }
+        @Test
+        @DisplayName("")
+        void shouldReturnPatchedAccount(){
+            Long requestedId = 1L;
+            AccountRequestDTO requestDTO = DtoCreator.getAccountRequestDto();
+            Account account = EntityCreator.getAccount();
+            Account updatedAccount = Account.builder()
+                    .userId(account.getUserId())
+                    .firstName("newFirstName")
+                    .lastName("newLastName")
+                    .country("newCountry")
+                    .city("newCity")
+                    .email("newEmail")
+                    .balance(account.getBalance())
+                    .creationDate(account.getCreationDate())
+                    .build();
+
+            Mockito
+                    .when(accountRepository.findById(requestedId))
+                    .thenReturn(Optional.of(account));
+           Mockito
+                   .when(accountRepository.save(ArgumentMatchers.argThat((passedIn)-> {
+                        return passedIn.equals(account);
+                    }))).thenReturn(updatedAccount);
+
+            service.updateAccountById(requestedId,requestDTO);
+            Mockito.verify(accountRepository, Mockito.times(1)).save(account);
+
 
 
         }
     }
 }
-
-//            Mockito
-//                    .when(accountRepository.findById(account.getUserId()))
-//                    .thenReturn(Optional.of(account));
-
-//            Mockito - оба проходят тест
-//                    .verify(accountRepository, Mockito.times(1))
-//                    .save(ArgumentMatchers.argThat((passedIn)-> {
-//                        return passedIn.equals(account);
-//                    }));
-
