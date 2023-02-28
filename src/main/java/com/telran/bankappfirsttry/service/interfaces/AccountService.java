@@ -8,23 +8,16 @@ import java.util.List;
 
 public interface AccountService {
     void createAccount(AccountRequestDTO request);
+
     List<AccountResponseDTO> getAccountsFiltered(List<String> city, Instant creationDate, String sort);
+
     AccountResponseDTO getAccountById(Long userId);
+
     void updateBalance(Long id, Float amount, AccountRequestDTO requestDTO);
- //  void updateAccountById(Long userId, Float amount, /*TransactionRequestDTO request,*/ AccountRequestDTO account);
-   void updateAccountById(Long userId, /*TransactionRequestDTO request,*/ AccountRequestDTO account);
-   void transferMoneyBetweenAccounts(Long idTo, Long idFrom, Float amount, AccountRequestDTO account, Long id);
+
+    void updateAccountById(Long userId, AccountRequestDTO account);
+
+    void transferMoneyBetweenAccounts(Long idTo, Long idFrom, Float amount, AccountRequestDTO account, Long id);
+
     void deleteAccountByUserId(Long userId);
-
-
-
-
-
-  //  void transferMoneyBetweenAccounts(Integer fromId, Integer toId, Float amount, Account account);
-    //  List<Account> getAccountsFiltered(List<String> city, Instant creationDate, String sort);
-
-//  Account findAccountById(Integer userId);
-//  ResponseEntity<Account> findAccountById(Long userId);
-//  ResponseEntity<Account> getAccountById(Long userId);
-// Account updateAccountById(Long userId, Float amount, Account account);
 }

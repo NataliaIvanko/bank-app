@@ -23,7 +23,7 @@ public class AccountMapperTest {
 
     @Test
     @DisplayName("mapping account into accountDto")
-    public void accountToAccountDto(){
+    public void accountToAccountDto() {
         Account account = EntityCreator.getAccount();
         AccountResponseDTO expectedDto = DtoCreator.getAccountResponseDto();
         Assertions.assertEquals(expectedDto, accountMapper.accountToDto(account));
@@ -40,12 +40,11 @@ public class AccountMapperTest {
 
     @Test
     @DisplayName("mapping accountDto into account")
-    public void accountDtoToAccount(){
+    public void accountDtoToAccount() {
         AccountRequestDTO requestDTO = DtoCreator.getAccountRequestDto();
         Account expectedAccount = accountMapper.dtoToAccount(requestDTO);
         compareEntityToRequestDto(expectedAccount, requestDTO);
     }
-
 
     @Test
     @DisplayName("mapping accountDto into account")
@@ -57,31 +56,32 @@ public class AccountMapperTest {
     }
 
     @DisplayName("compare entity to Dto")
-    private void compareEntityToRequestDto(Account account, AccountRequestDTO requestDTO){
+    private void compareEntityToRequestDto(Account account, AccountRequestDTO requestDTO) {
         assertAll(
-                ()-> assertEquals(account.getFirstName(), requestDTO.getFirstName()),
-                ()-> assertEquals(account.getLastName(), requestDTO.getLastName()),
-                ()-> assertEquals(account.getCountry(), requestDTO.getCountry()),
-                ()-> assertEquals(account.getCity(), requestDTO.getCity()),
-                ()-> assertEquals(account.getEmail(), requestDTO.getEmail()),
-                ()-> assertEquals(account.getCreationDate(), requestDTO.getCreationDate()),
-                ()-> assertEquals(account.getBalance(), requestDTO.getBalance()),
-                ()-> assertEquals(account.getTransactions(), requestDTO.getTransactions())
+                () -> assertEquals(account.getFirstName(), requestDTO.getFirstName()),
+                () -> assertEquals(account.getLastName(), requestDTO.getLastName()),
+                () -> assertEquals(account.getCountry(), requestDTO.getCountry()),
+                () -> assertEquals(account.getCity(), requestDTO.getCity()),
+                () -> assertEquals(account.getEmail(), requestDTO.getEmail()),
+                () -> assertEquals(account.getCreationDate(), requestDTO.getCreationDate()),
+                () -> assertEquals(account.getBalance(), requestDTO.getBalance()),
+                () -> assertEquals(account.getTransactions(), requestDTO.getTransactions())
         );
 
     }
+
     @Test
     @DisplayName("compare entity to Dto")
-    private void compareEntityToResponseDto(Account account, AccountResponseDTO responseDTO){
+    private void compareEntityToResponseDto(Account account, AccountResponseDTO responseDTO) {
         assertAll(
-                ()-> assertEquals(account.getFirstName(), responseDTO.getFirstName()),
-                ()-> assertEquals(account.getLastName(), responseDTO.getLastName()),
-                ()-> assertEquals(account.getCountry(), responseDTO.getCountry()),
-                ()-> assertEquals(account.getCity(), responseDTO.getCity()),
-                ()-> assertEquals(account.getEmail(), responseDTO.getEmail()),
-                ()-> assertEquals(account.getCreationDate(), responseDTO.getCreationDate()),
-                ()-> assertEquals(account.getBalance(), responseDTO.getBalance()),
-                ()-> assertEquals(account.getTransactions(), responseDTO.getTransactions())
+                () -> assertEquals(account.getFirstName(), responseDTO.getFirstName()),
+                () -> assertEquals(account.getLastName(), responseDTO.getLastName()),
+                () -> assertEquals(account.getCountry(), responseDTO.getCountry()),
+                () -> assertEquals(account.getCity(), responseDTO.getCity()),
+                () -> assertEquals(account.getEmail(), responseDTO.getEmail()),
+                () -> assertEquals(account.getCreationDate(), responseDTO.getCreationDate()),
+                () -> assertEquals(account.getBalance(), responseDTO.getBalance()),
+                () -> assertEquals(account.getTransactions(), responseDTO.getTransactions())
         );
 
     }

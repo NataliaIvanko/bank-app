@@ -7,6 +7,8 @@ import com.telran.bankappfirsttry.dto.TransactionResponseDTO;
 import com.telran.bankappfirsttry.entity.enums.TransactionType;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DtoCreator {
 
@@ -19,6 +21,8 @@ public class DtoCreator {
                 .email("ja@gmail.com")
                 .creationDate(Instant.now())
                 .balance(100F)
+                .transactions(new HashSet<>(Set.of()))
+
                 .build();
     }
 

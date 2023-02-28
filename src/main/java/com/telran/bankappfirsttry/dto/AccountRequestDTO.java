@@ -33,8 +33,6 @@ public class AccountRequestDTO {
     private String email;
 
     private Instant creationDate;
-
     private Float balance;
-
     private Set<Transaction> transactions;
 }

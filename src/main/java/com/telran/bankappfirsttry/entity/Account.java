@@ -1,7 +1,4 @@
 package com.telran.bankappfirsttry.entity;
-
-//import jakarta.persistence.*;
-
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,8 +14,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "account")
-
-
 public class Account {
 
     @Id
@@ -50,9 +45,8 @@ public class Account {
     @ManyToMany
     @JoinTable(name = "accounts_transactions",
             joinColumns = {
-            @JoinColumn(name = "user_id", referencedColumnName = "user_id")},
+                    @JoinColumn(name = "user_id", referencedColumnName = "user_id")},
             inverseJoinColumns = {
-            @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id")})
+                    @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id")})
     private Set<Transaction> transactions;
-
 }

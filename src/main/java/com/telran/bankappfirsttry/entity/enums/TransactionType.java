@@ -8,9 +8,7 @@ import java.util.Arrays;
 
 @AllArgsConstructor
 @Getter
-
 public enum TransactionType {
-
     WITHDRAW(1, "withdraw"),
     TRANSFER(2, "transfer"),
     DEPOSIT(3, "deposit");
@@ -18,9 +16,7 @@ public enum TransactionType {
     private final Integer typeId;
     private final String typeName;
 
-
-
-   @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static TransactionType findByType(String typeName) {
         if (typeName == null) {
             return null;
@@ -30,5 +26,4 @@ public enum TransactionType {
                 .findFirst()
                 .orElse(null);
     }
-
 }

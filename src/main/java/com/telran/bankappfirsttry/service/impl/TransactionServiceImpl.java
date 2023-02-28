@@ -24,7 +24,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class TransactionServiceImpl implements TransactionService {
 
     private TransactionRepository transactionRepository;
-
     private EntityManager entityManager;
     private final TransactionMapper transactionMapper;
 
@@ -32,7 +31,6 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionResponseDTO getTransactionByID(Long id) {
         var transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "transaction is not found"));
-
         return transactionMapper.transactionToDto(transaction);
     }
 
@@ -42,7 +40,6 @@ public class TransactionServiceImpl implements TransactionService {
         List<Transaction> transactions = transactionRepository.findAll().stream()
                 .sorted(Comparator.comparing(Transaction::getId))
                 .toList();
-
         return transactionMapper.transactionListToDto(transactions);
     }
 
@@ -50,7 +47,6 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionResponseDTO> getTransactionsFiltered(TransactionRequestDTO transaction, String sort) {
         Map<String, Object> searchParams = new HashMap<>();
         StringBuilder query = new StringBuilder();
-        // select * from account_details where ad.account.name = :name and ad.country = :country
         query.append("from Transaction tr where 1=1");
 
         if (transaction.getDateTime() != null) {
@@ -78,6 +74,4 @@ public class TransactionServiceImpl implements TransactionService {
 
         return emQuery.getResultList();
     }
-
-
 }

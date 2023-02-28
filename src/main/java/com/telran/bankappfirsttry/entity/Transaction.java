@@ -38,11 +38,4 @@ public class Transaction {
 
     @Column(name = "account_to")
     private Long accountTo;
-
-
-    //@ManyToMany(mappedBy = "transactions") or
-    //Set<Account> ??;
-
-
-
 }

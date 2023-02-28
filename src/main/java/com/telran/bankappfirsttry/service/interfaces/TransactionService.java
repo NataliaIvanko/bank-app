@@ -6,9 +6,10 @@ import com.telran.bankappfirsttry.dto.TransactionResponseDTO;
 import java.util.List;
 
 public interface TransactionService {
-   TransactionResponseDTO getTransactionByID(Long id);
+    TransactionResponseDTO getTransactionByID(Long id);
 
     List<TransactionResponseDTO> getTransactionsFiltered(TransactionRequestDTO transaction, String sort);
-    List<TransactionResponseDTO> getAllTransactions ();
+
+    List<TransactionResponseDTO> getAllTransactions();
 
 }

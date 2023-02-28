@@ -21,14 +21,12 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-//@RequiredArgsConstructor
 @Service
 @AllArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
     private TransactionRepository transactionRepository;
     private final AccountMapper accountMapper;
-
 
     @Override
     public void createAccount(AccountRequestDTO request) {
@@ -40,7 +38,6 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponseDTO getAccountById(Long userId) {
         var account = accountRepository.findById(userId).orElseThrow(
                 () -> new ResponseStatusException(NOT_FOUND, "account is not found"));
-
         return accountMapper.accountToDto(account);
     }
 
@@ -65,13 +62,14 @@ public class AccountServiceImpl implements AccountService {
         if (account.getEmail() != null) {
             newInfoAcc.setEmail(account.getEmail());
         }
-      accountRepository.save(newInfoAcc);
+        accountRepository.save(newInfoAcc);
     }
+
     @Override
-    public void updateBalance(Long id, Float amount, AccountRequestDTO requestDTO){
-       var newInfoAccount = findAccountById(id);
-        if(requestDTO.getBalance() != null){
-            newInfoAccount.setBalance(requestDTO.getBalance()+amount);
+    public void updateBalance(Long id, Float amount, AccountRequestDTO requestDTO) {
+        var newInfoAccount = findAccountById(id);
+        if (requestDTO.getBalance() != null) {
+            newInfoAccount.setBalance(requestDTO.getBalance() + amount);
             var transaction = createTransaction(id, id, amount);
             newInfoAccount.getTransactions().add(transaction);
             accountRepository.save(newInfoAccount);
@@ -197,6 +195,7 @@ public class AccountServiceImpl implements AccountService {
                 .map(accountMapper::accountToDto)
                 .toList();
     }
+
     @Override
     public void deleteAccountByUserId(Long userId) {
         accountRepository.deleteById(userId);

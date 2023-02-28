@@ -19,5 +19,4 @@ public class TransactionRequestDTO {
     private Float amount;
     private TransactionType type;
 
-
 }

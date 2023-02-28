@@ -24,45 +24,46 @@ public class TransactionMapperTest {
 
     @Test
     @DisplayName("mapping transaction list into transaction dto")
-    public void transactionListIntoTransactionDto(){
+    public void transactionListIntoTransactionDto() {
         List<Transaction> listTransaction = new ArrayList<>();
         listTransaction.add(EntityCreator.getTransaction());
         List<TransactionResponseDTO> actualResponseDto = mapper.transactionListToDto(listTransaction);
-       compareListToListDto(listTransaction,actualResponseDto);
+        compareListToListDto(listTransaction, actualResponseDto);
     }
 
     @Test
     @DisplayName("mapping transaction to transaction response dto")
-    public void transactionToTransactionResponseDto(){
+    public void transactionToTransactionResponseDto() {
         Transaction transaction = EntityCreator.getTransaction();
         TransactionResponseDTO responseDTO = DtoCreator.getTransactionResponseDto();
         Assertions.assertEquals(responseDTO, mapper.transactionToDto(transaction));
     }
+
     @Test
     @DisplayName("mapping transaction to transaction response dto")
-    public void transactionToTransactionResponseDto1(){
+    public void transactionToTransactionResponseDto1() {
         Transaction transaction = EntityCreator.getTransaction();
-        TransactionResponseDTO responseDTO =mapper.transactionToDto(transaction);
+        TransactionResponseDTO responseDTO = mapper.transactionToDto(transaction);
         compareTransactionToResponseDto(transaction, responseDTO);
     }
 
     @DisplayName("compare transaction to response dto")
-    private void compareTransactionToResponseDto(Transaction transaction, TransactionResponseDTO responseDTO){
+    private void compareTransactionToResponseDto(Transaction transaction, TransactionResponseDTO responseDTO) {
         assertAll(
-                ()-> assertEquals(transaction.getId(), responseDTO.getId()),
-                ()-> assertEquals(transaction.getType(), responseDTO.getType()),
-                ()-> assertEquals(transaction.getAmount(), responseDTO.getAmount())
-//                ()-> assertEquals(transaction.getAccountFrom(), responseDTO.getAccountFrom),
-//                ()-> assertEquals(transaction.getAccountTo(), responseDTO.getAccountTo),
+                () -> assertEquals(transaction.getId(), responseDTO.getId()),
+                () -> assertEquals(transaction.getType(), responseDTO.getType()),
+                () -> assertEquals(transaction.getAmount(), responseDTO.getAmount()),
+                ()-> assertEquals(transaction.getAccountFrom(), responseDTO.getAccountFrom()),
+                ()-> assertEquals(transaction.getAccountTo(), responseDTO.getAccountTo())
         );
     }
-    private void compareListToListDto(List<Transaction>transaction,List<TransactionResponseDTO>responseDTOS){
+
+    private void compareListToListDto(List<Transaction> transaction, List<TransactionResponseDTO> responseDTOS) {
         assertEquals(transaction.size(), responseDTOS.size());
         for (int s = 0; s < transaction.size(); s++) {
             compareTransactionToResponseDto(transaction.get(s), responseDTOS.get(s));
         }
     }
-
 }
 
 

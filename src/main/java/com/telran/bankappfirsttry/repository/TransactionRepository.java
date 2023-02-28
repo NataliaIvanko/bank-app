@@ -9,9 +9,10 @@ import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findAllByDateTime(Instant dateTime);
-    List<Transaction> findAllByType(TransactionType type);
-    List<Transaction> findAllByTypeAndDateTime(TransactionType type, Instant dateTime);
 
+    List<Transaction> findAllByType(TransactionType type);
+
+    List<Transaction> findAllByTypeAndDateTime(TransactionType type, Instant dateTime);
 
 
 }

@@ -9,8 +9,9 @@ import java.util.List;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
+    List<Account> findAllByCityInIgnoreCase(List<String> city);
 
-List<Account> findAllByCityInIgnoreCase(List<String> city);
-List<Account>findAccountByCreationDate(Instant creationDate);
-List<Account>findAccountByCityInAndCreationDate(List<String> city, Instant creationDate);
+    List<Account> findAccountByCreationDate(Instant creationDate);
+
+    List<Account> findAccountByCityInAndCreationDate(List<String> city, Instant creationDate);
 }

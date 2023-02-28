@@ -10,7 +10,6 @@ public class TransactionTypeConverter implements AttributeConverter<TransactionT
     public String convertToDatabaseColumn(TransactionType transactionType) {
         System.out.println(transactionType);
         return transactionType == null ? null : transactionType.getTypeName().toUpperCase();
-
     }
 
     @Override

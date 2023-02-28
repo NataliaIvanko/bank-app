@@ -1,15 +1,15 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/bank
-    username: postgres
-    password: postgres
-
-    jpa:
-      hibernate:
-        ddl-auto: update  <!--none-->
-        show-sql: true
-
-    liquibase:
-      enabled: false
-      change-log: db/changelog/db.changelog.xml
-      drop-first: true
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/bank
+#    username: postgres
+#    password: postgres
+#
+#    jpa:
+#      hibernate:
+#        ddl-auto: update
+#        show-sql: true
+#
+#    liquibase:
+#      enabled: false
+#      change-log: db/changelog/db.changelog.xml
+#      drop-first: true

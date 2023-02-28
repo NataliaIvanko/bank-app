@@ -3,20 +3,16 @@ package com.telran.bankappfirsttry.controller;
 import com.telran.bankappfirsttry.dto.TransactionRequestDTO;
 import com.telran.bankappfirsttry.dto.TransactionResponseDTO;
 import com.telran.bankappfirsttry.service.interfaces.TransactionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 public class TransactionController {
-
-    @Autowired
+   // @Autowired
     private TransactionService transactionService;
-
-    @Autowired
-    private EntityManager entityManager;
 
     @GetMapping("/transactions/{id}")
     public TransactionResponseDTO getTransactionByID(@PathVariable("id") Long id) {
@@ -33,6 +29,4 @@ public class TransactionController {
                                                                 @RequestParam(value = "sort", required = false) String sort) {
         return transactionService.getTransactionsFiltered(transaction, sort);
     }
-
-
 }

@@ -38,6 +38,7 @@ public class AccountController {
                                   @RequestBody AccountRequestDTO account) {
         accountService.updateAccountById(userId, account);
     }
+
     @PatchMapping("/accounts/balance/{userId}")
             public void updateBalance(@PathVariable("userId") Long id,
                                       @RequestParam(value = "amount") Float amount,
@@ -58,8 +59,4 @@ public class AccountController {
     public void deleteAccountByUserId(@PathVariable("userId") Long userId) {
         accountService.deleteAccountByUserId(userId);
     }
-
-
-
-
 }

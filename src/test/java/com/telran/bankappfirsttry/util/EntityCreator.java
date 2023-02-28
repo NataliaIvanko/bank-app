@@ -5,32 +5,32 @@ import com.telran.bankappfirsttry.entity.Transaction;
 import com.telran.bankappfirsttry.entity.enums.TransactionType;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 public class EntityCreator {
 
     public static Account getAccount(){
-        Account account = Account.builder()
+        return Account.builder()
                 .userId(1L)
                 .firstName("Jane")
                 .lastName("Atkins")
                 .country("Germany")
                 .city("Berlin")
                 .email("ja@gmail.com")
-               // .creationDate(Instant.parse("2022-02-15T13:18:47.00Z"))
                 .creationDate(DtoCreator.getAccountRequestDto().getCreationDate())
                 .balance(100F)
+                .transactions(new HashSet<>(Set.of()))
                 .build();
-        return account;
     }
     public static Transaction getTransaction(){
-        Transaction transaction = Transaction.builder()
+        return  Transaction.builder()
                 .id(1L)
                 .dateTime(Instant.now())
                 .type(TransactionType.DEPOSIT)
                 .amount(500F)
                 .accountFrom(1L)
-                .accountTo(2L)
+                .accountTo(1L)
                 .build();
-        return transaction;
     }
 }

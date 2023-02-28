@@ -7,8 +7,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface AccountMapper {
-
-    AccountResponseDTO accountToDto (Account account);
+    AccountResponseDTO accountToDto(Account account);
     Account dtoToAccount(AccountRequestDTO requestDTO);
 
 }
